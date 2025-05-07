@@ -2,13 +2,9 @@
 
 import Link from "next/link";
 import type { NextPage } from "next";
-import { useAccount } from "wagmi";
 import { BugAntIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
-import { Address } from "~~/components/scaffold-eth";
 
 const Home: NextPage = () => {
-  const { address: connectedAddress } = useAccount();
-
   return (
     <>
       <div className="flex items-center flex-col flex-grow pt-10">
@@ -24,8 +20,7 @@ const Home: NextPage = () => {
             </code>
           </p>
           <p className="text-center text-lg">
-            Edit your circuits{" "}
-            in{" "}
+            Edit your circuits in{" "}
             <code className="italic bg-base-300 text-base font-bold max-w-full break-words break-all inline-block">
               packages/circuits/
             </code>

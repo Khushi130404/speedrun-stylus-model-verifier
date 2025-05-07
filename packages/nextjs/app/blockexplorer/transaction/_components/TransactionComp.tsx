@@ -4,32 +4,30 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Hash, Transaction, TransactionReceipt, createPublicClient, formatEther, formatUnits, http } from "viem";
 import { Address } from "~~/components/scaffold-eth";
-import { decodeTransactionData, getFunctionDetails } from "~~/utils/scaffold-eth";
-import { replacer } from "~~/utils/scaffold-eth/common";
+import { decodeTransactionData } from "~~/utils/scaffold-eth";
 
 const client = createPublicClient({
   chain: {
     id: 412346,
-    name: 'Local Nitro',
-    network: 'nitro-local',
+    name: "Local Nitro",
+    network: "nitro-local",
     nativeCurrency: {
       decimals: 18,
-      name: 'Ethereum',
-      symbol: 'ETH',
+      name: "Ethereum",
+      symbol: "ETH",
     },
     rpcUrls: {
-      default: { http: ['http://localhost:8547'] },
-      public: { http: ['http://localhost:8547'] },
+      default: { http: ["http://localhost:8547"] },
+      public: { http: ["http://localhost:8547"] },
     },
   },
-  transport: http()
+  transport: http(),
 });
 
 const TransactionComp = ({ txHash }: { txHash: Hash }) => {
   const router = useRouter();
   const [transaction, setTransaction] = useState<Transaction>();
   const [receipt, setReceipt] = useState<TransactionReceipt>();
-  const [functionCalled, setFunctionCalled] = useState<string>();
 
   useEffect(() => {
     if (txHash) {
@@ -41,9 +39,6 @@ const TransactionComp = ({ txHash }: { txHash: Hash }) => {
           const transactionWithDecodedData = decodeTransactionData(tx);
           setTransaction(transactionWithDecodedData);
           setReceipt(receipt);
-
-          const functionCalled = transactionWithDecodedData.input.substring(0, 10);
-          setFunctionCalled(functionCalled);
         } catch (error) {
           console.error("Error fetching transaction:", error);
         }
@@ -64,41 +59,59 @@ const TransactionComp = ({ txHash }: { txHash: Hash }) => {
           <table className="table rounded-lg bg-base-100 w-full shadow-lg md:table-lg table-md">
             <tbody>
               <tr>
-                <td><strong>Transaction Hash:</strong></td>
+                <td>
+                  <strong>Transaction Hash:</strong>
+                </td>
                 <td>{transaction.hash}</td>
               </tr>
               <tr>
-                <td><strong>Block Number:</strong></td>
+                <td>
+                  <strong>Block Number:</strong>
+                </td>
                 <td>{Number(transaction.blockNumber)}</td>
               </tr>
               <tr>
-                <td><strong>From:</strong></td>
-                <td><Address address={transaction.from} format="long" /></td>
+                <td>
+                  <strong>From:</strong>
+                </td>
+                <td>
+                  <Address address={transaction.from} format="long" />
+                </td>
               </tr>
               <tr>
-                <td><strong>To:</strong></td>
+                <td>
+                  <strong>To:</strong>
+                </td>
                 <td>
                   {!receipt?.contractAddress ? (
                     transaction.to && <Address address={transaction.to} format="long" />
                   ) : (
-                    <span>Contract Creation: <Address address={receipt.contractAddress} format="long" /></span>
+                    <span>
+                      Contract Creation: <Address address={receipt.contractAddress} format="long" />
+                    </span>
                   )}
                 </td>
               </tr>
               <tr>
-                <td><strong>Value:</strong></td>
+                <td>
+                  <strong>Value:</strong>
+                </td>
                 <td>{formatEther(transaction.value)} ETH</td>
               </tr>
               <tr>
-                <td><strong>Gas Price:</strong></td>
+                <td>
+                  <strong>Gas Price:</strong>
+                </td>
                 <td>{formatUnits(transaction.gasPrice || 0n, 9)} Gwei</td>
               </tr>
               <tr>
-                <td><strong>Input Data:</strong></td>
+                <td>
+                  <strong>Input Data:</strong>
+                </td>
                 <td className="form-control">
-                  <textarea 
-                    readOnly 
-                    value={transaction.input} 
+                  <textarea
+                    readOnly
+                    value={transaction.input}
                     className="textarea textarea-bordered h-24 font-mono text-sm"
                   />
                 </td>

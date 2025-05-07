@@ -154,14 +154,14 @@ bash run-dev-node.sh
 To deploy your app to Vercel:
 
 ```bash
-yarn vercel
+vercel
 ```
 
 Follow Vercel's instructions to get a public URL.
 
 For production deployment:
 ```bash
-yarn vercel --prod
+vercel --prod
 ```
 
 ## Checkpoint 5: 📜 Contract Verification
