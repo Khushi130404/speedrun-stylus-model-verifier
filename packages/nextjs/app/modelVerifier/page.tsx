@@ -19,7 +19,7 @@ export default function ModelVerifier() {
   const [proof, setProof] = useState<any>(null);
 
   // Replace with your deployed contract address
-  const CONTRACT_ADDRESS = "0xda52b25ddB0e3B9CC393b0690Ac62245Ac772527"; // Update with your contract address
+  const CONTRACT_ADDRESS = "0xcFa499086fB64e05462Eb4fbc03292792e151005"; // Update with your contract address
   const CONTRACT_ABI = [
     {
       inputs: [
@@ -60,8 +60,8 @@ export default function ModelVerifier() {
   useEffect(() => {
     const loadContract = async () => {
       try {
-        const provider = new ethers.JsonRpcProvider("http://localhost:8547");
-        const privateKey = "0xb6b15c8cb491557369f3c7d2c287b053eb229daa9c22138887752191c9520659";
+        const provider = new ethers.JsonRpcProvider(process.env.NEXT_PUBLIC_RPC_URL || "");
+        const privateKey = process.env.NEXT_PUBLIC_PRIVATE_KEY || "";
         const newSigner = new ethers.Wallet(privateKey, provider);
         const contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, newSigner);
         setContract(contract);

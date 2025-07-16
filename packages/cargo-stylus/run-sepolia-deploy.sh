@@ -1,17 +1,43 @@
 #!/bin/bash
 
-# Start Nitro dev node in the background
-echo "Starting Nitro dev node..."
-docker run --rm --name nitro-dev -p 8547:8547 offchainlabs/nitro-node:v3.2.1-d81324d --dev --http.addr 0.0.0.0 --http.api=net,web3,eth,debug --http.corsdomain="*" &
+# Exit on error
+set -e
 
-# Wait for the node to initialize
-echo "Waiting for the Nitro node to initialize..."
-until [[ "$(curl -s -X POST -H "Content-Type: application/json" \
-  --data '{"jsonrpc":"2.0","method":"net_version","params":[],"id":1}' \
-  http://127.0.0.1:8547)" == *"result"* ]]; do
-    sleep 0.1
+# Arbitrum Sepolia RPC URL
+SEPOLIA_RPC_URL="https://sepolia-rollup.arbitrum.io/rpc"
+
+# Check for PRIVATE_KEY environment variable
+if [[ -z "$PRIVATE_KEY" ]]; then
+  echo "Error: PRIVATE_KEY environment variable is not set."
+  echo "Please set your private key: export PRIVATE_KEY=your_private_key_here"
+  exit 1
+fi
+
+# Optionally, check for required tools
+for cmd in cast solcjs curl; do
+  if ! command -v $cmd &> /dev/null; then
+    echo "Error: $cmd is not installed."
+    exit 1
+  fi
 done
-echo "Nitro node is running!"
+
+# Check if we can connect to Arbitrum Sepolia
+echo "Checking connection to Arbitrum Sepolia..."
+curl_output=$(curl -s -X POST -H "Content-Type: application/json" \
+  --data '{"jsonrpc":"2.0","method":"net_version","params":[],"id":1}' \
+  "$SEPOLIA_RPC_URL")
+
+if [[ "$curl_output" != *"result"* ]]; then
+    echo "Error: Cannot connect to Arbitrum Sepolia RPC"
+    echo "Curl output: $curl_output"
+    exit 1
+fi
+echo "Connected to Arbitrum Sepolia!"
+
+# Derive deployer address from private key
+deployer_address=$(cast wallet address --private-key "$PRIVATE_KEY")
+
+echo "Deployer address: $deployer_address"
 
 # Compile the Solidity contract
 echo "Compiling Solidity contract..."
@@ -34,10 +60,10 @@ fi
 
 echo "Solidity contract compiled successfully."
 
-# Deploy the contract to Nitro dev node
-echo "Deploying the Solidity contract..."
-deploy_output=$(cast send --private-key 0xb6b15c8cb491557369f3c7d2c287b053eb229daa9c22138887752191c9520659 \
-  --rpc-url http://127.0.0.1:8547 \
+# Deploy the contract to Arbitrum Sepolia
+echo "Deploying the Solidity contract to Arbitrum Sepolia..."
+deploy_output=$(cast send --private-key "$PRIVATE_KEY" \
+  --rpc-url "$SEPOLIA_RPC_URL" \
   --create 0x$contract_bin)
 
 # Extract deployment transaction hash using robust pattern
@@ -81,20 +107,13 @@ mkdir -p build
 
 # Save deployment info to JSON file
 echo "{
-  \"network\": \"nitro-dev\",
+  \"network\": \"arbitrum-sepolia\",
+  \"deployer_address\": \"$deployer_address\",
   \"contract_address\": \"$contract_address\",
   \"transaction_hash\": \"$deployment_tx\",
-  \"rpc_url\": \"http://127.0.0.1:8547\",
+  \"rpc_url\": \"$SEPOLIA_RPC_URL\",
   \"deployment_time\": \"$(date -u +%Y-%m-%dT%H:%M:%SZ)\"
 }" > build/solidity-deployment-info.json
 
 echo "Deployment info saved to build/solidity-deployment-info.json"
-
-# Monitor the Nitro node
-while true; do
-    if ! docker ps | grep -q nitro-dev; then
-        echo "Nitro node container stopped unexpectedly"
-        exit 1
-    fi
-    sleep 5
-done
+echo "Deployment completed successfully on Arbitrum Sepolia!"

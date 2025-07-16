@@ -66,13 +66,15 @@ yarn install
 
 ### Step 2: Start the Frontend
 
-1. Open a new terminal window to keep the dev node running.
-2. Navigate to the `nextjs` folder:
-   ```bash
-   cd packages/nextjs
-   ```
+> ⚠️ **Before running the frontend:**
+> 
+>    Go to the `packages/nextjs` directory:
+>    ```bash
+>    cd packages/nextjs
+>    cp .env.example .env
+>    ```
 
-3. Start the development server:
+Start the development server:
    ```bash
    yarn dev
    ```
@@ -174,6 +176,43 @@ cargo stylus verify -e http://127.0.0.1:8547 --deployment-tx "$deployment_tx"
 ```
 
 Replace `$deployment_tx` with your deployment transaction hash.
+
+## 🚀 Deploying to Arbitrum Sepolia
+
+If you want to deploy your Age Verifier contract to the Arbitrum Sepolia testnet, follow these steps:
+
+1. **Export your private key in the terminal**
+   ```bash
+   export PRIVATE_KEY=your_private_key_of_your_ethereum_wallet
+   ```
+
+2. **Run the Sepolia Deployment Script**
+   ```bash
+   cd packages/cargo-stylus/zkp_age_verifier
+   bash run-sepolia-deploy.sh
+   ```
+   This will deploy your contract to Arbitrum Sepolia and output the contract address and transaction hash.
+
+3. **Configure the Frontend for Sepolia**
+   - Go to the `packages/nextjs` directory:
+     ```bash
+     cd packages/nextjs
+     cp .env.example .env
+     ```
+   - Open the `.env` file and set the following variables:
+     ```env
+     NEXT_PUBLIC_RPC_URL=https://sepolia-rollup.arbitrum.io/rpc
+     NEXT_PUBLIC_PRIVATE_KEY=your_private_key_of_your_ethereum_wallet
+     ```
+     Replace `your_private_key_of_your_ethereum_wallet` with your actual Ethereum wallet private key (never share this key publicly).
+
+4. **Start the Frontend**
+   ```bash
+   yarn run dev
+   ```
+   Your frontend will now connect to the Arbitrum Sepolia network and interact with your deployed contract.
+
+---
 
 ## 🏁 Next Steps
 

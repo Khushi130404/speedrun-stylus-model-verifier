@@ -4,19 +4,19 @@ import { Block, Hash, TransactionReceipt, createPublicClient, http } from "viem"
 const publicClient = createPublicClient({
   chain: {
     id: 412346,
-    name: 'Local Nitro',
-    network: 'nitro-local',
+    name: "Local Nitro",
+    network: "nitro-local",
     nativeCurrency: {
       decimals: 18,
-      name: 'Ethereum',
-      symbol: 'ETH',
+      name: "Ethereum",
+      symbol: "ETH",
     },
     rpcUrls: {
-      default: { http: ['http://localhost:8547'] },
-      public: { http: ['http://localhost:8547'] },
+      default: { http: [process.env.NEXT_PUBLIC_RPC_URL || ""] },
+      public: { http: [process.env.NEXT_PUBLIC_RPC_URL || ""] },
     },
   },
-  transport: http()
+  transport: http(),
 });
 
 export const useFetchBlocks = () => {
@@ -59,10 +59,13 @@ export const useFetchBlocks = () => {
         });
 
         const receipts = await Promise.all(receiptPromises);
-        const receiptsMap = receipts.reduce((map, receipt, index) => {
-          map[txHashes[index]] = receipt;
-          return map;
-        }, {} as { [key: string]: TransactionReceipt });
+        const receiptsMap = receipts.reduce(
+          (map, receipt, index) => {
+            map[txHashes[index]] = receipt;
+            return map;
+          },
+          {} as { [key: string]: TransactionReceipt },
+        );
 
         setTransactionReceipts(receiptsMap);
       } catch (e) {
