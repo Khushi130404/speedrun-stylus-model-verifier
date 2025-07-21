@@ -212,6 +212,54 @@ If you want to deploy your Age Verifier contract to the Arbitrum Sepolia testnet
    ```
    Your frontend will now connect to the Arbitrum Sepolia network and interact with your deployed contract.
 
+
+---
+
+## ⚡️ Cache Your Deployed Contract for Faster, Cheaper Access
+
+> 📖 Contracts deployed on Arbitrum Sepolia can use this command for gas benefits, time savings, and cheaper contract function calls. Our backend will benchmark and place bids on your behalf to ensure your contract is not evicted from the CacheManager contract, fully automating this process for you.
+
+Before caching your contract, make sure you have installed the Smart Cache CLI globally:
+
+```bash
+npm install -g smart-cache-cli
+```
+
+After deploying your contract to Arbitrum Sepolia, you can cache your contract address using the `smart-cache` CLI. Caching your contract enables:
+- 🚀 **Faster contract function calls** by reducing lookup time
+- 💸 **Cheaper interactions** by optimizing access to contract data
+- 🌐 **Seamless access** to your contract from any environment or system
+
+> 💡 **Info:** Both the `<address>` and `--deployed-by` flags are **mandatory** when adding a contract to the cache.
+
+### 📝 Simple Example
+
+```bash
+smart-cache add <CONTRACT_ADDRESS> --deployed-by <YOUR_WALLET_ADDRESS_WITH_WHOM_YOU_HAVE_DEPLOYED_CONTRACT>
+```
+
+### 🛠️ Advanced Example
+
+```bash
+smart-cache add 0xYourContractAddress \
+  --deployed-by 0xYourWalletAddress \
+  --network arbitrum-sepolia \
+  --tx-hash 0xYourDeploymentTxHash \
+  --name "YourContractName" \
+  --version "1.0.0"
+```
+
+- `<CONTRACT_ADDRESS>`: The address of your deployed contract (**required**)
+- `--deployed-by`: The wallet address you used to deploy the contract (**required**)
+- `--network arbitrum-sepolia`: By default, contracts are cached for the Arbitrum Sepolia network for optimal benchmarking and compatibility
+- `--tx-hash`, `--name`, `--version`: Optional metadata for better organization
+
+> ⚠️ **Warning:** If you omit the required fields, the command will not work as expected.
+
+> 💡 For more options, run `smart-cache add --help`.
+
+For more in-depth details and the latest updates, visit the [smart-cache-cli package on npmjs.com](https://www.npmjs.com/package/smart-cache-cli).
+
 ---
 
 ## 🏁 Next Steps
