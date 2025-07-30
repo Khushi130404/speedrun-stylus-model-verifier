@@ -1,5 +1,9 @@
 #!/bin/bash
 
+if [ -f .env ]; then
+  export $(grep -v '^#' .env | xargs)
+fi
+
 # Exit on error
 set -e
 
@@ -14,7 +18,7 @@ if [[ -z "$PRIVATE_KEY" ]]; then
 fi
 
 # Optionally, check for required tools
-for cmd in cast solcjs curl; do
+for cmd in cast npx curl; do
   if ! command -v $cmd &> /dev/null; then
     echo "Error: $cmd is not installed."
     exit 1
@@ -41,7 +45,7 @@ echo "Deployer address: $deployer_address"
 
 # Compile the Solidity contract
 echo "Compiling Solidity contract..."
-solcjs --bin --abi --optimize -o build/ contracts/ModelVerifier.sol
+npx solcjs --bin --abi --optimize -o build/ contracts/ModelVerifier.sol
 
 if [[ $? -ne 0 ]]; then
     echo "Error: Solidity compilation failed"

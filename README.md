@@ -64,6 +64,12 @@ yarn install
 
 > The dev node will be accessible at `http://localhost:8547`.
 
+**Important:** After deploying a contract, update the contract address in `packages/nextjs/app/modelVerifier/page.tsx`:
+
+```ts
+const CONTRACT_ADDRESS = "<your_new_contract_address>";
+```
+
 ### Step 2: Start the Frontend
 
 > ⚠️ **Before running the frontend:**
