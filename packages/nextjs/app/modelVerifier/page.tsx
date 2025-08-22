@@ -19,7 +19,7 @@ export default function ModelVerifier() {
   const [proof, setProof] = useState<any>(null);
 
   // Replace with your deployed contract address
-  const CONTRACT_ADDRESS = "0xda52b25ddB0e3B9CC393b0690Ac62245Ac772527";
+  const CONTRACT_ADDRESS = "0xD47D03D6e8a24C050d7ef26Ef39100ceAc42E736";
   const CONTRACT_ABI = [
     {
       inputs: [
