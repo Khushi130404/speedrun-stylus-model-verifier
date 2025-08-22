@@ -5,6 +5,7 @@ import { buildPoseidon } from "circomlibjs";
 import { ethers } from "ethers";
 import { groth16 } from "snarkjs";
 
+
 export default function ModelVerifier() {
   const [w, setW] = useState("");
   const [b, setB] = useState("");
